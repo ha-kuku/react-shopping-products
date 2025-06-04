@@ -8997,9 +8997,9 @@ const stepperTextBox = css`
 `;
 function Stepper({ quantity, onIncrease, onDecrease }) {
   return /* @__PURE__ */ jsxs("div", { css: stepperLayout, children: [
-    /* @__PURE__ */ jsx$1("div", { css: stepperButtonContainer, children: /* @__PURE__ */ jsx$1("img", { css: stepperButton, src: "./minus-quantity.svg", alt: "minus", onClick: onDecrease }) }),
-    /* @__PURE__ */ jsx$1("div", { css: stepperTextBox, children: /* @__PURE__ */ jsx$1("p", { children: quantity }) }),
-    /* @__PURE__ */ jsx$1("div", { css: stepperButtonContainer, children: /* @__PURE__ */ jsx$1("img", { css: stepperButton, src: "./add-quantity.svg", alt: "plus", onClick: onIncrease }) })
+    /* @__PURE__ */ jsx$1("div", { css: stepperButtonContainer, children: /* @__PURE__ */ jsx$1("button", { css: stepperButton, onClick: onDecrease, children: /* @__PURE__ */ jsx$1("img", { src: "./minus-quantity.svg", alt: "minus" }) }) }),
+    /* @__PURE__ */ jsx$1("span", { css: stepperTextBox, children: quantity }),
+    /* @__PURE__ */ jsx$1("div", { css: stepperButtonContainer, children: /* @__PURE__ */ jsx$1("button", { css: stepperButton, onClick: onIncrease, children: /* @__PURE__ */ jsx$1("img", { css: stepperButton, src: "./add-quantity.svg", alt: "plus", onClick: onIncrease }) }) })
   ] });
 }
 const ToastLayout = css`
@@ -9070,7 +9070,12 @@ async function putCartItem({ id: id2, quantity }) {
   };
   return fetch(`${CART_URL}/${id2}`, options);
 }
-function useCartQuantity({ productId, stock, selectedCartItem, onChange }) {
+function useCartItemController({
+  productId,
+  stock,
+  selectedCartItem,
+  onChange
+}) {
   const [quantity, setQuantity] = reactExports.useState((selectedCartItem == null ? void 0 : selectedCartItem.quantity) ?? 0);
   const [showToast, setShowToast] = reactExports.useState(false);
   reactExports.useEffect(() => {
@@ -9172,7 +9177,7 @@ const priceLayout = css`
   font-weight: 500;
 `;
 function Product({ id: id2, imageUrl, name, price, stock, selectedCardItems, onChange }) {
-  const { quantity, showToast, handleAddToCart, handleIncrease, handleDecrease } = useCartQuantity({
+  const { quantity, showToast, handleAddToCart, handleIncrease, handleDecrease } = useCartItemController({
     productId: Number(id2),
     stock,
     selectedCartItem: selectedCardItems[0],
@@ -9392,7 +9397,7 @@ function useAPI({ name, fetcher }) {
     });
   }, [fetcher, name, setData, setError, setLoading]);
   reactExports.useEffect(() => {
-    if (!data[name]) {
+    if (!Object.prototype.hasOwnProperty.call(data, name)) {
       request();
     }
   }, [name, data, request]);
@@ -9474,7 +9479,7 @@ const deleteButton = css`
   cursor: pointer;
 `;
 function CartItemRow({ item, onChange }) {
-  const { quantity, showToast, handleIncrease, handleDecrease } = useCartQuantity({
+  const { quantity, showToast, handleIncrease, handleDecrease } = useCartItemController({
     productId: item.product.id,
     stock: item.product.stock,
     selectedCartItem: item,
@@ -9513,7 +9518,7 @@ function CartItemRow({ item, onChange }) {
     ] }),
     /* @__PURE__ */ jsx$1("button", { css: deleteButton, onClick: handleDelete, children: "삭제" }),
     showToast && /* @__PURE__ */ jsx$1(Toast, { children: "재고 수량을 초과할 수 없습니다." })
-  ] }, item.id);
+  ] });
 }
 const backdrop = css`
   position: fixed;
